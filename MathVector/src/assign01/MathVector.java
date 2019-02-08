@@ -17,6 +17,8 @@ public class MathVector {
 	// count of elements in the vector
 	private int vectorSize;
 	
+	private String result; 
+	
 	/**
 	 * Creates a new row or column vector.
 	 * For a row vector, the input array is expected to have 1 row and a positive number of columns,
@@ -72,16 +74,54 @@ public class MathVector {
 		
 		MathVector otherVec = (MathVector)other;
 		
-		// STUDENT: Fill in remaining code to determine equality of two vector objects, do not return false.
-		return false;
+		if((this.isRowVector && !(otherVec.isRowVector)) || (!(this.isRowVector) && otherVec.isRowVector) )
+		{
+			throw new IllegalArgumentException("Both entries must be rows or columns"); 
+		}
+		
+		else
+		{
+			for (int i = 0; i < this.data.length; i++)
+			{
+				for (int j = 0; j < this.data[0].length; j++)
+				{
+					if (this.data[i][j] != otherVec.data[i][j])
+					{
+						return false; 
+					}
+				}
+			}
+		}
+
+		return true;
 	}
 	
 	/**
 	 * Generates a returns a new vector that is the transposed version of this vector.
 	 */
 	public MathVector transpose() {
-		// STUDENT: Fill in with code to accomplish the method contract above, do not return null.
-		return null;
+		
+		int a = this.data[0].length;   
+		int b = this.data.length; 
+		double[][] temp = new double[a][b]; 
+		
+		if (this.isRowVector)
+		{
+			for (int i = 0; i < this.data[0].length; i++)
+			{
+			  temp[i][0] = this.data[0][i];  
+			}
+		}
+		
+		else if (!this.isRowVector)
+		{
+			for (int i = 0; i < this.data.length; i++)
+			{
+				temp[0][i] = this.data[i][0]; 
+			}
+		}
+		MathVector transpose = new MathVector(temp); 
+		return transpose; 
 	}
 	
 	/**
@@ -92,8 +132,56 @@ public class MathVector {
 	 *         the same length or column vectors of the same length
 	 */
 	public MathVector add(MathVector other) {
-		// STUDENT: Fill in with code to accomplish the method contract above, do not return null.
-		return null;
+		
+		double tempThis; 
+		double tempOther; 
+		double sum; 
+		MathVector mySum = new MathVector(data); 
+		
+		if (this.isRowVector && !(other.isRowVector) || !(this.isRowVector) && other.isRowVector)
+		{
+			throw new IllegalArgumentException("Must both be columns or both be rows"); 
+		}
+		else if (this.data.length != other.data.length || this.data[0].length != other.data[0].length)
+		{
+			throw new IllegalArgumentException("Must be the same length"); 
+		}
+		else
+		{
+			
+			
+			if (this.isRowVector)
+			{
+				double[][] sumFinal = new double[1][this.data.length]; 
+					for(int j = 0; j < this.data.length; j++)
+					{
+					tempThis = this.data[0][j]; 
+					tempOther = other.data[0][j]; 
+					
+					sum = tempThis + tempOther; 
+					sumFinal[0][j] = sum; 
+				}
+					mySum = new MathVector(sumFinal);				
+			}
+			
+			
+			
+			else if (!(this.isRowVector))
+			{
+				double[][] sumFinal = new double[this.data.length][1]; 
+					for(int j = 0; j < this.data.length; j++)
+					{
+					tempThis = this.data[j][0]; 
+					tempOther = other.data[j][0]; 
+					
+					sum = tempThis + tempOther; 
+					sumFinal[j][0] = sum; 
+				}
+					mySum = new MathVector(sumFinal);				
+			}
+		}
+		
+		return mySum;  
 	}
 	
 	/**
@@ -104,24 +192,119 @@ public class MathVector {
 	 *         the same length or column vectors of the same length
 	 */	
 	public double dotProduct(MathVector other) {
-		// STUDENT: Fill in with code to accomplish the method contract above, do not return 0.
-		return 0;
+		
+		double tempThis; 
+		double tempOther; 
+		double product; 
+		double dotProduct = 0; 
+		
+		if (this.isRowVector && !(other.isRowVector) || !(this.isRowVector) && other.isRowVector)
+		{
+			throw new IllegalArgumentException("Must both be columns or both be rows"); 
+		}
+		else if (this.data.length != other.data.length || this.data[0].length != other.data[0].length)
+		{
+			throw new IllegalArgumentException("Must be the same length"); 
+		}
+		else
+		{
+			
+			
+			if (this.isRowVector)
+			{
+					for(int j = 0; j < this.data[0].length; j++)
+					{
+					tempThis = this.data[0][j]; 
+					tempOther = other.data[0][j]; 
+					
+					product = tempThis * tempOther; 
+					dotProduct = dotProduct + product; 
+				}			
+			}
+			
+			
+			
+			else if (!(this.isRowVector))
+			{
+					for(int j = 0; j < this.data.length; j++)
+					{
+					tempThis = this.data[j][0]; 
+					tempOther = other.data[j][0]; 
+					
+					product = tempThis * tempOther; 
+					dotProduct = dotProduct + product; 
+				}		
+			}
+		}
+		
+		return dotProduct;  
+		
+		
 	}
 	
 	/**
 	 * Computes and returns this vector's magnitude (also known as a vector's length) .
 	 */
 	public double magnitude() {
-		// STUDENT: Fill in with code to accomplish the method contract above, do not return 0.
-		return 0;
+		double number = 0; 
+		
+		if (this.isRowVector)
+		{
+			for(int j = 0; j < this.data[0].length; j++)
+			{
+				double temp = this.data[0][j]; 
+				number = (temp * temp) + number; 
+				
+			}
+		}
+		
+		else if (!this.isRowVector)
+		{
+			for(int j = 0; j < this.data.length; j++)
+			{
+				double temp = this.data[j][0]; 
+				number = (temp * temp) + number; 
+				
+			}
+		}
+		return Math.sqrt(number); 
 	}
 	
 	/** 
 	 * Generates and returns a normalized version of this vector.
 	 */
 	public MathVector normalize() {
-		// STUDENT: Fill in with code to accomplish the method contract above, do not return null.
-		return null;
+		double normalize = 0; 
+		MathVector myNormal = new MathVector(data); 
+		
+		if (this.isRowVector)
+		{
+			double[][] normalFinal = new double[1][this.data.length];
+			
+			for(int j = 0; j < this.data.length; j++)
+			{
+				double temp = this.data[0][j];
+				normalize = temp / this.magnitude(); 
+				normalFinal[0][j] = normalize; 
+			}
+			myNormal = new MathVector(normalFinal); 
+		}
+		
+		
+		else if (!(this.isRowVector))
+		{
+			double[][] normalFinal = new double[this.data.length][1]; 
+			
+			for(int j = 0; j < this.data.length; j++)
+			{
+				double temp = this.data[j][0];
+				normalize = temp / this.magnitude(); 
+				normalFinal[j][0] = normalize; 
+			}
+			myNormal = new MathVector(normalFinal); 
+		}
+		
+		return myNormal; 
 	}
 	
 	/**
@@ -135,7 +318,50 @@ public class MathVector {
 	 *  In both cases, notice the lack of a newline or space after the last number.
 	 */
 	public String toString() {
-		// STUDENT: Fill in with code to accomplish the method contract above, do not return null.
-		return null;
+		String result = ""; 
+		int i = 0; 
+		int j = 0; 
+		
+		if(this.isRowVector)
+		{
+			for (i = 0; i < this.data.length; i++)
+			{
+				for(j = 0; j < this.data[i].length; j++)
+				{
+				double number = data[i][j]; 
+				if (i != data.length - 1 && j != data.length -1)
+				{
+					result = result +  " " + Double.toString(number); 
+				} 
+				else
+				{
+				 result = result + Double.toString(number); 
+				}
+				}
+			}
+		}
+		
+		
+		if(!this.isRowVector)
+		{
+			for (i = 0; i < this.data.length; i++)
+			{
+				for(j = 0; j < this.data[i].length; j++)
+				{
+				double number = data[i][j]; 
+				if (i != data.length - 1 && j != data.length -1)
+				{
+					result = result +  Double.toString(number) + "\n"; 
+				} 
+				else
+				{
+				 result = result + Double.toString(number); 
+				}
+				}
+			}
+		}
+		
+		
+		return result; 
 	}
 }
